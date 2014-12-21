@@ -1,0 +1,5 @@
+rootProject.name = 'mail-agent'
+
+include ':anonymization-service'
+include 'common-model'
+
