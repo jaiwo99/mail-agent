@@ -4,7 +4,9 @@ repositories {
 buildscript {
     ext {
         springBootVersion = '1.2.0.RELEASE'
+        springLoadedVersion = '1.2.0.RELEASE'
         javaxElVersion = '2.2.4'
+        javaInjectVersion = '1'
     }
 
     repositories {
@@ -13,6 +15,7 @@ buildscript {
 
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("org.springframework:springloaded:${springLoadedVersion}")
     }
 }
 
@@ -50,7 +53,7 @@ project('anonymization-service') {
     dependencies {
         compile project(":common-api")
         compile project(":common-model")
-        compile("javax.inject:javax.inject:1")
+        compile("javax.inject:javax.inject:${javaInjectVersion}")
         compile("org.springframework.boot:spring-boot-starter-amqp")
         compile("org.springframework.boot:spring-boot-starter-data-mongodb")
     }
@@ -79,4 +82,14 @@ project('common-model') {
 project('user-webapp') {
     apply plugin: 'spring-boot'
     apply plugin: 'war'
+
+    war {
+        basename = 'mail-agent-user-webapp'
+    }
+
+    dependencies {
+        compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+        compile("org.hibernate:hibernate-validator")
+        testCompile("org.springframework.boot:spring-boot-starter-test")
+    }
 }
