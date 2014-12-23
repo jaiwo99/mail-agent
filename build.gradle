@@ -1,0 +1,76 @@
+repositories {
+    mavenCentral()
+}
+buildscript {
+    ext {
+        springBootVersion = '1.2.0.RELEASE'
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.0'
+}
+
+allprojects {
+    apply plugin: 'base'
+}
+
+subprojects { subproject ->
+    apply plugin: 'java'
+    apply plugin: 'idea'
+
+    version = '0.1.0'
+
+    repositories {
+        mavenCentral()
+    }
+
+    task copyJars(type: Copy) {
+        from "$buildDir/libs"
+        into "$rootDir/dist/target/dist/"
+        include "**/*.jar"
+    }
+
+    assemble.doLast {
+        copyJars.execute()
+    }
+}
+
+project('anonymization-service') {
+    apply plugin: 'spring-boot'
+    dependencies {
+        compile project(":common-api")
+        compile project(":common-model")
+        compile("javax.inject:javax.inject:1")
+        compile("org.springframework.boot:spring-boot-starter-amqp")
+        compile("org.springframework.boot:spring-boot-starter-data-mongodb")
+    }
+}
+
+project('common-api') {
+    apply plugin: 'spring-boot'
+    dependencies {
+        compile("org.hibernate:hibernate-validator")
+        compile("javax.validation:validation-api")
+        compile("javax.el:javax.el-api:2.2.4")
+        compile("org.glassfish.web:javax.el:2.2.4")
+    }
+    bootRepackage.enabled = false
+}
+
+project('common-model') {
+    apply plugin: 'spring-boot'
+    dependencies {
+        compile project(":common-api")
+        compile("org.springframework.boot:spring-boot-starter-data-mongodb")
+    }
+    bootRepackage.enabled = false
+}
