@@ -1,12 +1,3 @@
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'spring-boot'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-version = '1.0'
-bootRepackage.enabled = false
-
 repositories {
     mavenCentral()
 }
@@ -29,20 +20,57 @@ task wrapper(type: Wrapper) {
 }
 
 allprojects {
-
+    apply plugin: 'base'
 }
 
-subprojects {
+subprojects { subproject ->
     apply plugin: 'java'
     apply plugin: 'idea'
-    apply plugin: 'spring-boot'
+
+    version = '0.1.0'
 
     repositories {
-        mavenLocal()
         mavenCentral()
     }
 
-    dependencies {
-        testCompile("org.springframework.boot:spring-boot-starter-test")
+    task copyJars(type: Copy) {
+        from "$buildDir/libs"
+        into "$rootDir/dist/target/dist/"
+        include "**/*.jar"
     }
+
+    assemble.doLast {
+        copyJars.execute()
+    }
+}
+
+project('anonymization-service') {
+    apply plugin: 'spring-boot'
+    dependencies {
+        compile project(":common-api")
+        compile project(":common-model")
+        compile("javax.inject:javax.inject:1")
+        compile("org.springframework.boot:spring-boot-starter-amqp")
+        compile("org.springframework.boot:spring-boot-starter-data-mongodb")
+    }
+}
+
+project('common-api') {
+    apply plugin: 'spring-boot'
+    dependencies {
+        compile("org.hibernate:hibernate-validator")
+        compile("javax.validation:validation-api")
+        compile("javax.el:javax.el-api:2.2.4")
+        compile("org.glassfish.web:javax.el:2.2.4")
+    }
+    bootRepackage.enabled = false
+}
+
+project('common-model') {
+    apply plugin: 'spring-boot'
+    dependencies {
+        compile project(":common-api")
+        compile("org.springframework.boot:spring-boot-starter-data-mongodb")
+    }
+    bootRepackage.enabled = false
 }
