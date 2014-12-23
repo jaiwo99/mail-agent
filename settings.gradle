@@ -4,4 +4,5 @@ include 'anonymization-service'
 include 'common-model'
 include 'common-api'
 include 'dist'
+include 'user-webapp'
 

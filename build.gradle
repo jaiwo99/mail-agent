@@ -4,6 +4,7 @@ repositories {
 buildscript {
     ext {
         springBootVersion = '1.2.0.RELEASE'
+        javaxElVersion = '2.2.4'
     }
 
     repositories {
@@ -60,8 +61,8 @@ project('common-api') {
     dependencies {
         compile("org.hibernate:hibernate-validator")
         compile("javax.validation:validation-api")
-        compile("javax.el:javax.el-api:2.2.4")
-        compile("org.glassfish.web:javax.el:2.2.4")
+        compile("javax.el:javax.el-api:${javaxElVersion}")
+        compile("org.glassfish.web:javax.el:${javaxElVersion}")
     }
     bootRepackage.enabled = false
 }
@@ -73,4 +74,9 @@ project('common-model') {
         compile("org.springframework.boot:spring-boot-starter-data-mongodb")
     }
     bootRepackage.enabled = false
+}
+
+project('user-webapp') {
+    apply plugin: 'spring-boot'
+    apply plugin: 'war'
 }
