@@ -11,7 +11,7 @@ import java.util.function.Function;
  */
 public class MailDTO implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     @Email
     String from;
@@ -24,13 +24,13 @@ public class MailDTO implements Serializable {
     @NotBlank
     String conversationReference;
 
-    public final Function<MailDTO, MailDTO> DEFAULT_ANONYMIZE_FUNC = input -> {
+    public transient final Function<MailDTO, MailDTO> DEFAULT_ANONYMIZE_FUNC = input -> {
         final MailDTO mailDTO = new MailDTO();
         mailDTO.setSubject(input.subject);
         mailDTO.setContent(input.content);
         mailDTO.setConversationReference(input.conversationReference);
-        mailDTO.setFrom("anonymous" + from.hashCode());
-        mailDTO.setTo("anonymous" + to.hashCode());
+        mailDTO.setFrom("anonymous-" + from.hashCode());
+        mailDTO.setTo("anonymous-" + to.hashCode());
         return mailDTO;
     };
 
