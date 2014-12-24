@@ -4,6 +4,9 @@ repositories {
 buildscript {
     ext {
         springBootVersion = '1.2.0.RELEASE'
+        springLoadedVersion = '1.2.0.RELEASE'
+        javaxElVersion = '2.2.4'
+        javaInjectVersion = '1'
     }
 
     repositories {
@@ -11,7 +14,8 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "org.springframework:springloaded:${springLoadedVersion}"
     }
 }
 
@@ -21,11 +25,11 @@ task wrapper(type: Wrapper) {
 
 allprojects {
     apply plugin: 'base'
+    apply plugin: 'idea'
 }
 
 subprojects { subproject ->
     apply plugin: 'java'
-    apply plugin: 'idea'
 
     version = '0.1.0'
 
@@ -49,28 +53,52 @@ project('anonymization-service') {
     dependencies {
         compile project(":common-api")
         compile project(":common-model")
-        compile("javax.inject:javax.inject:1")
-        compile("org.springframework.boot:spring-boot-starter-amqp")
-        compile("org.springframework.boot:spring-boot-starter-data-mongodb")
+        compile "javax.inject:javax.inject:${javaInjectVersion}"
+        compile "org.springframework.boot:spring-boot-starter-amqp"
+        compile "org.springframework.data:spring-data-mongodb"
+        compile "com.fasterxml.jackson.core:jackson-databind"
     }
 }
 
 project('common-api') {
+    // use spring boot plugin only for dependency management
     apply plugin: 'spring-boot'
     dependencies {
-        compile("org.hibernate:hibernate-validator")
-        compile("javax.validation:validation-api")
-        compile("javax.el:javax.el-api:2.2.4")
-        compile("org.glassfish.web:javax.el:2.2.4")
+        compile "org.hibernate:hibernate-validator"
+        compile "javax.validation:validation-api"
+        compile "javax.el:javax.el-api:${javaxElVersion}"
+        compile "org.glassfish.web:javax.el:${javaxElVersion}"
     }
+
     bootRepackage.enabled = false
 }
 
 project('common-model') {
+    // use spring boot plugin only for dependency management
     apply plugin: 'spring-boot'
     dependencies {
         compile project(":common-api")
-        compile("org.springframework.boot:spring-boot-starter-data-mongodb")
+        compile "org.springframework.data:spring-data-mongodb"
     }
+
     bootRepackage.enabled = false
+}
+
+project('user-webapp') {
+    apply plugin: 'spring-boot'
+    apply plugin: 'war'
+
+    war {
+        baseName = 'mail-agent-user-webapp'
+    }
+
+    dependencies {
+        compile project(":common-api")
+        compile "javax.inject:javax.inject:${javaInjectVersion}"
+        compile "com.fasterxml.jackson.core:jackson-databind"
+        compile "org.springframework.boot:spring-boot-starter-amqp"
+        compile "org.springframework.boot:spring-boot-starter-thymeleaf"
+        compile "org.hibernate:hibernate-validator"
+        testCompile "org.springframework.boot:spring-boot-starter-test"
+    }
 }
