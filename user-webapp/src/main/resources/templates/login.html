@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" href="../../css/bootstrap.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}" href="../../css/bootstrap.min.css"/>
+</head>
+<body>
+<header class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        nav
+    </div>
+</header>
+<div class="container page-container">
+    <div class="row">
+        <h3>User Login Form</h3>
+        <div th:if="${msg}" th:text="${msg}" th:class="alert alert-success" role="alert">message</div>
+        <form th:action="@{/login}" method="POST" th:object="${loginCmd}">
+            <div th:class="${#fields.hasErrors('username')} ? 'form-group has-error has-feedback' : 'form-group has-feedback'">
+                <label for="username" class="control-label">username</label>
+                <input id="username" th:field="*{username}" type="text" placeholder="password" class="form-control"/>
+                <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" th:class="control-label">Incorrect date</p>
+            </div>
+            <div th:class="${#fields.hasErrors('password')} ? 'form-group has-error has-feedback' : 'form-group has-feedback'">
+                <label for="password" class="control-label">password</label>
+                <input id="password" th:field="*{password}" class="form-control" type="password" placeholder="password"/>
+                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" th:class="control-label">Incorrect date</p>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+<footer>footer</footer>
+</body>
+</html>

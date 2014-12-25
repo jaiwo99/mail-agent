@@ -79,6 +79,7 @@ project('common-model') {
     dependencies {
         compile project(":common-api")
         compile "org.springframework.data:spring-data-mongodb"
+        compile "com.fasterxml.jackson.core:jackson-annotations"
     }
 
     bootRepackage.enabled = false
@@ -94,10 +95,12 @@ project('user-webapp') {
 
     dependencies {
         compile project(":common-api")
+        compile project(":common-model")
         compile "javax.inject:javax.inject:${javaInjectVersion}"
         compile "com.fasterxml.jackson.core:jackson-databind"
         compile "org.springframework.boot:spring-boot-starter-amqp"
         compile "org.springframework.boot:spring-boot-starter-thymeleaf"
+        compile "org.springframework.boot:spring-boot-starter-security"
         compile "org.hibernate:hibernate-validator"
         testCompile "org.springframework.boot:spring-boot-starter-test"
     }
